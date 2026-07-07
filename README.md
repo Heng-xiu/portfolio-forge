@@ -59,6 +59,7 @@ SKILL.md                          # skill 主體(觸發條件、原則、流程)
 references/
   content-doc-template.md         # CONTENT.md 模板
   design-style-library.md         # 視覺風格庫(訪談選項)
+  motion-effects-library.md       # 動態效果庫(11 個實戰配方:對比滑桿/逐字進場/粒子/rail…)
   qa-checklist.md                 # 逐段 QA 驗收清單
 workflows/
   content-intake.md               # 階段 0-1:訪談 + 內容文檔
