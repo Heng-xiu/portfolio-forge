@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>portfolio-forge — 把個人資訊鍛造成美感極佳的個人網站</title>
-<meta name="description" content="一個給 Claude Code 用的 skill。內容文檔當唯一真值 → 參考圖 → 對抗式評審 → 高保真複刻 → 逐段 QA → 可逆部署。">
+<title>portfolio-forge — 讓你的 AI 幫你做出敢見人的個人網站</title>
+<meta name="description" content="把一段話交給你的 AI 助手,它就會帶你走完一條驗證過的流程:弄清楚你是誰、畫設計圖、挑剔地審、做成網頁、檢查、上線。">
 <meta property="og:title" content="portfolio-forge">
-<meta property="og:description" content="把「一個人的資訊」鍛造成美感極佳、可上線的個人網站。">
+<meta property="og:description" content="讓你的 AI 幫你做出美感極佳、敢掛自己名字的個人網站。">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -177,9 +177,24 @@
   .cmp .tag.l{left:14px}
   .cmp .tag.r{right:14px}
 
-  /* typewriter caret */
-  .code .typing::after{content:"▍"; color:#7fd4a0; animation:blink .9s steps(1) infinite}
-  @keyframes blink{50%{opacity:0}}
+  /* 中文大標 */
+  h2.title.tc{font-family:var(--serif-tc); font-size:clamp(30px,5vw,54px); line-height:1.25; letter-spacing:.02em}
+
+  /* GitHub 角落 icon */
+  .gh-icon{display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px;
+    border-radius:50%; color:var(--ink-soft); transition:color .2s, background .2s}
+  .gh-icon:hover{color:var(--green); background:var(--card)}
+
+  /* 安裝區 prompt 卡 */
+  .install-note{font-size:16px; color:var(--ink-soft); margin-top:18px}
+  .prompt-card{font-family:var(--sans-tc); font-size:16.5px; line-height:1.9; position:relative}
+  .prompt-card p{margin-bottom:20px}
+  .copy-btn{font-family:var(--sans-tc); font-size:14px; background:var(--green); color:var(--paper);
+    border:none; border-radius:100px; padding:12px 26px; cursor:pointer; transition:background .2s, transform .2s}
+  .copy-btn:hover{background:var(--green-soft); transform:translateY(-1px)}
+  .copy-btn.done{background:#7fd4a0; color:var(--ink)}
+  .install-hint{font-size:14px; color:var(--ink-soft); margin-top:22px}
+  .install-hint .g{color:var(--green); font-weight:500}
 
   /* frame tilt */
   .show .frame{transition:transform .3s ease, box-shadow .3s ease; will-change:transform}
@@ -190,7 +205,6 @@
     .hero h1 .ch{animation:none; opacity:1; transform:none}
     .marquee .track{animation:none}
     .step .n{transform:none; opacity:1; transition:none}
-    .code .typing::after{animation:none}
   }
 </style>
 </head>
@@ -204,68 +218,68 @@
     <div class="brand"><span class="hammer">🔨</span> portfolio-forge</div>
     <div class="links">
       <a href="#pain">為什麼</a>
-      <a href="#diff">差異</a>
-      <a href="#flow">流程</a>
-      <a href="#install">安裝</a>
-      <a href="#demo">案例</a>
+      <a href="#diff">差在哪</a>
+      <a href="#flow">怎麼運作</a>
+      <a href="#install">開始使用</a>
+      <a href="#demo">實際案例</a>
     </div>
-    <a class="cta-mini" href="https://github.com/Heng-xiu/portfolio-forge" target="_blank" rel="noopener">GitHub ↗</a>
+    <a class="gh-icon" href="https://github.com/Heng-xiu/portfolio-forge" target="_blank" rel="noopener" aria-label="GitHub 原始碼" title="GitHub"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
   </div>
 </nav>
 
 <header class="hero">
   <canvas id="embers" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div class="eyebrow reveal">A Claude Code Skill · 個人網站鍛造流水線</div>
+    <div class="eyebrow reveal">裝給你的 AI 助手 · 個人網站製作流程</div>
     <h1 class="reveal">portfolio-<span class="forge">forge</span></h1>
-    <p class="lede reveal">把「一個人的資訊」，鍛造成<br>美感極佳、可上線的個人網站。</p>
-    <p class="sub reveal">內容文檔當唯一真值 <span class="pipe">→</span> 參考圖 <span class="pipe">→</span> 對抗式評審 <span class="pipe">→</span> 高保真複刻 <span class="pipe">→</span> 逐段 QA <span class="pipe">→</span> 可逆部署。一條被實戰驗證過的流水線。</p>
+    <p class="lede reveal">把「你是誰」，鍛造成<br>美感極佳、敢見人的個人網站。</p>
+    <p class="sub reveal">你只要說清楚自己是誰。設計、挑剔地審稿、做成網頁、檢查、上線 <span class="pipe">——</span> 交給你的 AI，照一條驗證過的流程走完。</p>
     <div class="btns reveal">
-      <a class="btn btn-primary" href="https://github.com/Heng-xiu/portfolio-forge" target="_blank" rel="noopener">下載 Skill（GitHub）→</a>
-      <a class="btn btn-ghost" href="#demo">看實際案例</a>
+      <a class="btn btn-primary" href="#install">交給你的 AI 開始 →</a>
+      <a class="btn btn-ghost" href="#demo">看做出來的網站</a>
     </div>
   </div>
 </header>
 
 <div class="marquee" aria-hidden="true">
   <div class="track" id="mq-track">
-    <span>CONTENT.md<span class="sep"> ✳ </span>唯一真值</span><span>參考圖<span class="sep"> ✳ </span>一 SECTION 一張</span><span>對抗式評審<span class="sep"> ✳ </span>不過關就重生</span><span>高保真複刻<span class="sep"> ✳ </span>1:1</span><span>逐段 QA<span class="sep"> ✳ </span>HEADLESS</span><span>可逆部署<span class="sep"> ✳ </span>PAGES.DEV</span>
+    <span>說清楚你是誰<span class="sep"> ✳ </span>只寫真的</span><span>AI 畫設計圖<span class="sep"> ✳ </span>一段一張</span><span>挑剔地審<span class="sep"> ✳ </span>不夠好就重畫</span><span>照圖做成網頁<span class="sep"> ✳ </span>忠實還原</span><span>逐段檢查<span class="sep"> ✳ </span>從頭到尾</span><span>放上網路<span class="sep"> ✳ </span>先試用再轉正</span>
   </div>
 </div>
 
 <section id="pain">
   <div class="wrap">
-    <div class="sec-num reveal">01 / PROBLEM</div>
-    <h2 class="title reveal">Why<span class="zh">AI 隨手做站，為什麼總是差一口氣</span></h2>
+    <div class="sec-num reveal">01 / 為什麼</div>
+    <h2 class="title tc reveal">AI 隨手做的網站，<br>為什麼總是差一口氣</h2>
     <div class="pain-grid reveal">
-      <div class="pain"><span class="emo">😵</span><h3>一堆幻覺</h3><p>AI 自己編了不存在的經歷、亂填連結，越做越偏離真實的你。</p></div>
-      <div class="pain"><span class="emo">📏</span><h3>字級爆掉</h3><p>Hero 大字溢出版面、標題互相碰撞，第一眼就顯得業餘。</p></div>
-      <div class="pain"><span class="emo">😮‍💨</span><h3>沒有呼吸感</h3><p>文字塞滿整段，像沒排版過的 word 檔，白白浪費了既有美感。</p></div>
-      <div class="pain"><span class="emo">🎭</span><h3>千篇一律</h3><p>每個區塊都「左字右圖」，一眼就被看穿是 AI 隨手生的。</p></div>
-      <div class="pain"><span class="emo">💥</span><h3>上線才發現壞</h3><p>本機看起來好好的，部署後圖裂了、動畫沒觸發、資產 404。</p></div>
+      <div class="pain"><span class="emo">😵</span><h3>內容是編的</h3><p>AI 會自己補上你沒說過的經歷、不存在的連結。看起來像你，其實不是你。</p></div>
+      <div class="pain"><span class="emo">📏</span><h3>字大到撞在一起</h3><p>大標題疊到照片上、文字擠出邊界，第一眼就顯得不專業。</p></div>
+      <div class="pain"><span class="emo">😮‍💨</span><h3>密密麻麻</h3><p>整段文字塞好塞滿，像沒排版過的文件，讀起來很累。</p></div>
+      <div class="pain"><span class="emo">🎭</span><h3>一看就是 AI 做的</h3><p>每一段都同一種排法，看兩眼就膩了。</p></div>
+      <div class="pain"><span class="emo">💥</span><h3>放上網才發現壞</h3><p>自己電腦上看好好的，別人一打開：圖是破的、按鈕沒反應。</p></div>
     </div>
   </div>
 </section>
 
 <section id="diff">
   <div class="wrap">
-    <div class="sec-num reveal">02 / DIFFERENCE</div>
-    <h2 class="title reveal">The Craft<span class="zh">三個決定質感、原文四步法沒教的環節</span></h2>
+    <div class="sec-num reveal">02 / 差在哪</div>
+    <h2 class="title tc reveal">三個決定質感的環節</h2>
     <div class="diff reveal">
       <div class="diff-row">
-        <div class="k">防幻覺</div>
+        <div class="k">只寫真的</div>
         <div class="bad"><span class="label">一般做法</span>AI 邊做邊編，經歷跟連結都靠猜。</div>
-        <div class="good">先寫 <code>CONTENT.md</code> 當唯一真值，參考圖裡的亂字一律以文檔為準。</div>
+        <div class="good">動手前，先把你的故事、作品、想給誰看，整理成一份檔案。之後所有內容都以它為準，AI 不准自己編。</div>
       </div>
       <div class="diff-row">
-        <div class="k">審美把關</div>
-        <div class="bad"><span class="label">一般做法</span>參考圖生完就直接拿去複刻。</div>
-        <div class="good"><strong>對抗式逐張評審</strong>：字級、呼吸感、構圖套路、幻覺文字、跨圖一致性，不過關就單張重生。這是靈魂。</div>
+        <div class="k">挑剔地審</div>
+        <div class="bad"><span class="label">一般做法</span>設計圖生完就直接拿去做。</div>
+        <div class="good">每張設計圖都被拿放大鏡檢查：字會不會太大、留白夠不夠、是不是千篇一律。<strong>不夠好就重畫，直到你點頭。</strong>這是靈魂。</div>
       </div>
       <div class="diff-row">
-        <div class="k">上線驗收</div>
-        <div class="bad"><span class="label">一般做法</span>build 成功就當作交付。</div>
-        <div class="good">headless 逐段截圖對照參考圖比對；部署後 smoke test，且不碰使用者既有網域。</div>
+        <div class="k">實際檢查</div>
+        <div class="bad"><span class="label">一般做法</span>做完就交差。</div>
+        <div class="good">用真的瀏覽器把網頁從頭捲到尾、一段段比對；放上網之後再打開一次，確認別人看到的跟你看到的一樣。</div>
       </div>
     </div>
   </div>
@@ -273,36 +287,30 @@
 
 <section id="flow">
   <div class="wrap">
-    <div class="sec-num reveal">03 / PIPELINE</div>
-    <h2 class="title reveal">Six Stages<span class="zh">從一句話定位，到上線</span></h2>
+    <div class="sec-num reveal">03 / 怎麼運作</div>
+    <h2 class="title tc reveal">從聊聊你是誰，到上線</h2>
     <div class="steps reveal">
-      <div class="step"><div class="n">0</div><div class="body"><h3>定位訪談</h3><p>用結構化提問收斂：網站給誰看、視覺風格、語言規模、素材來源。</p></div></div>
-      <div class="step"><div class="n">1</div><div class="body"><h3>內容文檔</h3><p>把 profile、定位、色盤、section 結構寫成 CONTENT.md ——後續一切的唯一真值。</p></div></div>
-      <div class="step"><div class="n">2</div><div class="body"><h3>生成參考圖</h3><p>用 taste-skill 的 imagegen-frontend-web，一個 section 一張高審美參考圖。</p></div></div>
-      <div class="step"><div class="n">3</div><div class="body"><h3>對抗式評審 <span class="soul">靈魂</span></h3><p>逐張挑戰、不過關就單張重生。這一步決定成品是「像模像樣」還是「真的好看」。</p></div></div>
-      <div class="step"><div class="n">4</div><div class="body"><h3>高保真複刻</h3><p>把定稿參考圖 + 內容文檔 + 真實素材交給 Codex Frontend App Builder，1:1 還原。</p></div></div>
-      <div class="step"><div class="n">5</div><div class="body"><h3>逐段 QA</h3><p>puppeteer 真實捲動、逐 section 截圖，對照參考圖驗收。不到位就退回迭代。</p></div></div>
-      <div class="step"><div class="n">6</div><div class="body"><h3>可逆部署</h3><p>Cloudflare Pages 上獨立網址 → 線上 smoke test → 網域決策交還你。</p></div></div>
+      <div class="step"><div class="n">0</div><div class="body"><h3>聊聊你是誰</h3><p>它會先問你：網站給誰看、想要什麼感覺、有哪些作品和照片。</p></div></div>
+      <div class="step"><div class="n">1</div><div class="body"><h3>整理成一份檔案</h3><p>把你的故事、定位、配色整理定稿。之後一切內容，都以這份為準。</p></div></div>
+      <div class="step"><div class="n">2</div><div class="body"><h3>畫設計圖</h3><p>網站的每一段，各畫一張設計圖給你過目。</p></div></div>
+      <div class="step"><div class="n">3</div><div class="body"><h3>挑剔地審 <span class="soul">靈魂</span></h3><p>一張張挑毛病，不夠好就重畫。這一步決定成品是「還行」還是「真的好看」。</p></div></div>
+      <div class="step"><div class="n">4</div><div class="body"><h3>照圖做成網頁</h3><p>把定稿的設計圖，加上你的真實照片與作品，忠實做成會動的網頁。</p></div></div>
+      <div class="step"><div class="n">5</div><div class="body"><h3>逐段檢查</h3><p>從頭捲到尾，一段一段跟設計圖比對。不到位就退回去改。</p></div></div>
+      <div class="step"><div class="n">6</div><div class="body"><h3>放上網路</h3><p>先給你一個試用網址確認沒問題；要不要換上自己的網域，由你決定。</p></div></div>
     </div>
   </div>
 </section>
 
 <section id="install">
   <div class="wrap">
-    <div class="sec-num reveal">04 / INSTALL</div>
-    <h2 class="title reveal">Get Started<span class="zh">放進 Claude Code，講一句話就觸發</span></h2>
-    <div class="code reveal">
-<span class="c"># 下載並安裝到你的 skills 目錄</span><br>
-git clone https://github.com/Heng-xiu/portfolio-forge.git<br>
-cp -r portfolio-forge ~/.claude/skills/portfolio-forge<br><br>
-<span class="c"># 重啟 Claude Code，然後說：</span><br>
-<span class="g" id="type-target" data-full="「幫我做個人網站」">「幫我做個人網站」</span>  <span class="c">或</span>  <span class="g">/portfolio-forge</span>
+    <div class="sec-num reveal">04 / 開始使用</div>
+    <h2 class="title tc reveal">把下面這段話，<br>交給你的 AI 助手</h2>
+    <p class="install-note reveal">複製貼上就好。安裝、需要的工具、整個流程，你的 AI 會自己搞定。</p>
+    <div class="code prompt-card reveal">
+      <p id="agent-prompt">請幫我安裝 portfolio-forge 這個 skill（來源：https://github.com/Heng-xiu/portfolio-forge ，安裝到你的 skills 目錄），安裝好之後，照它的流程幫我做一個個人網站。</p>
+      <button class="copy-btn" id="copy-btn">複製這段話</button>
     </div>
-    <div class="deps reveal">
-      <div class="dep"><div class="num">DEP 01</div><h4>imagegen-frontend-web</h4><p>taste-skill 的高審美參考圖引擎。skill 內含自動安裝指令。</p></div>
-      <div class="dep"><div class="num">DEP 02</div><h4>build-web-apps</h4><p>Codex 的 Frontend App Builder plugin，負責高保真複刻。</p></div>
-      <div class="dep"><div class="num">DEP 03</div><h4>Chrome + puppeteer</h4><p>headless 逐段 QA 截圖，抓出上線前的破圖與缺漏。</p></div>
-    </div>
+    <p class="install-hint reveal">適用 Claude Code、Codex 等能操作電腦的 AI 助手。已經在用的人，之後只要說一句<span class="g">「幫我做個人網站」</span>就會觸發。</p>
   </div>
 </section>
 
@@ -317,14 +325,14 @@ cp -r portfolio-forge ~/.claude/skills/portfolio-forge<br><br>
           <img class="after" src="showcase.png" alt="複刻上線後的真實首屏" loading="lazy">
           <div class="divider"></div>
           <div class="knob">&lt;&gt;</div>
-          <span class="tag l">REF · 參考圖</span>
-          <span class="tag r">LIVE · 上線成品</span>
+          <span class="tag l">AI 畫的設計圖</span>
+          <span class="tag r">完成的網站</span>
         </div>
       </div>
       <div class="reveal">
-        <h2 class="title">實際跑出來的第一個站</h2>
-        <p>左邊是 taste-skill 生的參考圖，右邊是複刻上線的真實首屏——<strong>拖曳滑桿</strong>自己驗證複刻精度。編輯雜誌風、真實照片 + 真實專案截圖，中間走了兩輪對抗式評審把 Hero 字級與 About 呼吸感修到位。</p>
-        <a class="btn btn-primary" href="https://hengshiou-portfolio.pages.dev" target="_blank" rel="noopener">看 live 網站 →</a>
+        <h2 class="title tc">實際做出來的第一個站</h2>
+        <p>左邊是 AI 先畫的設計圖，右邊是最後真的上線的網站——<strong>拖曳中間的把手</strong>，自己比對兩邊有多接近。真實照片、真實作品；那些字太大、太擠的毛病，都在設計圖階段就被挑掉了。</p>
+        <a class="btn btn-primary" href="https://hengshiou-portfolio.pages.dev" target="_blank" rel="noopener">打開這個網站 →</a>
       </div>
     </div>
   </div>
@@ -333,9 +341,9 @@ cp -r portfolio-forge ~/.claude/skills/portfolio-forge<br><br>
 <section class="final" style="border-bottom:none">
   <div class="wrap">
     <h2 class="reveal">別再讓 AI 隨手生一個<br>一眼看穿的網站。</h2>
-    <p class="reveal">用一條有紀律的流水線，把你的資訊鍛造成作品。</p>
+    <p class="reveal">一段話交給你的 AI，把「你是誰」鍛造成作品。</p>
     <div class="btns reveal" style="justify-content:center">
-      <a class="btn btn-primary" href="https://github.com/Heng-xiu/portfolio-forge" target="_blank" rel="noopener">到 GitHub 下載 →</a>
+      <a class="btn btn-primary" href="#install">把這段話交給你的 AI →</a>
     </div>
   </div>
 </section>
@@ -463,20 +471,16 @@ cp -r portfolio-forge ~/.claude/skills/portfolio-forge<br><br>
     fr.addEventListener('mouseleave', ()=>fr.style.transform = '');
   }
 
-  /* install: typewriter */
-  const ty = document.getElementById('type-target');
-  if(ty && !reduce){
-    const full = ty.dataset.full;
-    const io3 = new IntersectionObserver(es=>es.forEach(en=>{
-      if(!en.isIntersecting) return; io3.disconnect();
-      ty.textContent = ''; ty.classList.add('typing');
-      let k = 0;
-      const t = setInterval(()=>{
-        ty.textContent = full.slice(0, ++k);
-        if(k >= full.length){ clearInterval(t); setTimeout(()=>ty.classList.remove('typing'), 2600); }
-      }, 90);
-    }), {threshold:.6});
-    io3.observe(ty);
+  /* install: 一鍵複製 prompt */
+  const cb = document.getElementById('copy-btn');
+  if(cb){
+    cb.addEventListener('click', ()=>{
+      const txt = document.getElementById('agent-prompt').textContent.trim();
+      navigator.clipboard.writeText(txt).then(()=>{
+        cb.textContent = '已複製，貼給你的 AI 吧 ✓'; cb.classList.add('done');
+        setTimeout(()=>{ cb.textContent = '複製這段話'; cb.classList.remove('done'); }, 2600);
+      });
+    });
   }
 
   /* magnetic buttons */
